@@ -1,0 +1,5 @@
+.next
+.vscode
+lib
+localStorage
+node_modules
