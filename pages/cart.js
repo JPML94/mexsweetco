@@ -7,7 +7,8 @@ import {getCartItems, removeFromCart, checkoutCart, payForOrder} from '../lib/mo
 export default class Cart extends React.Component {
   state = {
     items: [],
-    loading: true
+    loading: true,
+    completed: false
   }
 
   async componentDidMount() {
@@ -47,9 +48,22 @@ export default class Cart extends React.Component {
       postcode
     }
 
-    const {data: {id}} = await checkoutCart(cartId, customer, address)
+    try {
+      const {data: {id}} = await checkoutCart(cartId, customer, address)
+
+      await payForOrder(id, token, email)
+
+      this.setState({
+        completed: true
+      })
+
+    } catch (e) {
+      console.log(e);
+    }
+
     
-    await payForOrder(id, token, email)
+    
+    
   }
 
 
@@ -70,8 +84,10 @@ export default class Cart extends React.Component {
     
     return (
       <Layout title="Cart">
-        <CartItemList {...rest} removeFromCart={this._handleRemoveFromCart} ></CartItemList>
-        {!loading && <CartSummary {...meta} handleCheckout={this._handleCheckout} />}
+        <CartItemList {...rest} removeFromCart={this._handleRemoveFromCart} />
+        {!loading && !rest.completed && (
+          <CartSummary {...meta} handleCheckout={this._handleCheckout} />
+        )}
       </Layout>
     )
   }

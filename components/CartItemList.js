@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Item, Loader, Button, Message } from 'semantic-ui-react';
 import { removeFromCart } from '../lib/moltin';
 
-export default ({items, loading}) => {
+export default ({items, loading, completed}) => {
   if (loading) return <Loader active inline='centered' />
 
   if(items.length === 0) {
@@ -10,6 +10,15 @@ export default ({items, loading}) => {
       <Message warning>
         <Message.Header>Your cart is empty</Message.Header>
         <p>You'll need to add some items to the cart before you checkout.</p>
+      </Message>
+    )
+  }
+
+  if(completed) {
+    return(
+      <Message success>
+        <Message.Header>Order placed!</Message.Header>
+        <p>Congratulations. You accepted your first payment with Stripe + Moltin.</p>
       </Message>
     )
   }
